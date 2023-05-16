@@ -1,0 +1,19 @@
+from subprocess import Popen, PIPE, STDOUT
+   
+def do_command(self,params):    
+    command = params.get(command)
+    process = Popen(command, stdout=PIPE, stderr=STDOUT, shell=True)
+    try:
+        result = []
+        with process.stdout:
+            for line in iter(process.stdout.readline, b''):
+                print(line.decode().strip())
+                result.append(line.decode().strip())
+        process.wait()
+        return result
+    except KeyboardInterrupt:
+        get_pid_cmd = """ps -ef | grep "%s" | grep -v grep | awk '{print $2}'""" % command[:10]
+        _, result = self.exe_command(get_pid_cmd)
+        kill_cmd = f"kill -9 {process.pid} {result[0]}"
+        print(f"kill -9 {process.pid} {result[0]}")
+        self.exe_command(kill_cmd)
