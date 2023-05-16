@@ -1,3 +1,5 @@
+import re
+
 def fuzzy_finder(self,key, data):
         """
         模糊查找器
